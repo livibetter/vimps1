@@ -1,0 +1,123 @@
+
+
+                                    vimps1
+
+                        Bash Loadable Builtin for PS1
+                                     with
+               Multi-color and Vim-like directory abbreviation
+
+
+vimps1 produces a prompt text with ANSI escape code colors and directory 
+abbreviation, which looks like the abbreviated directory names in Vim tabs. It 
+also has exit status indicator line.  A prompt may look like:
+
+   ~/.loc/share $
+
+Where ".loc" is the abbreviation of ~/.local, when a directory name has more 
+than four column width (=4 characters), it is truncated to just four 
+characters.  All directories in $PWD, except the last one.
+
+You can view a screenshot [1] of some examples.
+
+[1] http://imgur.com/uQBlfUl
+
+
+                                    PROMPT
+
+
+All styles, colors and user role characters are hard-coded.  The colors are:
+
+GREEN   : directory name is in green
+GREEN   : normal user ($)
+WHITE   : if abbreviated,
+RED     : directory separators (/)
+RED     : root user (#)
+MAGENTA : /home/$USER (~)
+
+There is always a space prefixed for readability.
+
+
+                                 EXIT STATUS
+
+
+vimps1 does not know the exit status of previous execution, the exit status is 
+carried over as first argument, in other words, vimps1 simply displays the 
+first argument in its exit status indicator.
+
+It is a red line with white centered text, right above the prompt, only shown 
+when $? > 0, it may looks like:
+
+  | ~ $ wrong command            |
+  |bash: wrong: command not found|
+  |             127              |
+  | ~ $                          |
+
+
+                                 DEPENDENCIES
+
+
+- Bash
+- Bash headers
+
+
+
+                                   BUILDING
+
+
+On Gentoo, those header files can be installed with USE=plugins of 
+app-shells/bash, and they can be found at /usr/include/bash-plugins.  You 
+should able to build the loadable just by running make.
+
+On other systems, if you don't know how to get them installed via package 
+manager, you may download Bash's source tarball of the same version and point 
+BASH_INCDIR to the top level of extracted tarball (where to locate builtins.h) 
+as the following:
+
+  make BASH_INCDIR=/path/to/bash-MAJOR.MINOR[.PATCH]
+
+
+                                 INSTALLATION
+
+
+There is no make install since there is no easy way to load a loadable, Bash's 
+enable builtin has no search path.  However, you can put the vimps1 loadable 
+to one of $PATH, and you can load it as shown below from bashrc:
+
+  enable -f "$(which vimps1)" vimps1
+  PS1='$(vimps1 $?)'
+
+You can also test it, for example:
+
+  $ echo "$(PWD=/path/to/testing vimps1 123)"
+
+
+                                   HISTORY
+
+
+vimps1 was originally written in Bash [1], inspired by Vim's directory 
+abbreviation style.  It was hosted on Google Code with a collection of other 
+codes.  However, its performance is very poor, therefore rewritten in C as 
+Bash loadable builtin [2] for better performance.
+
+[1] https://github.com/livibetter-backup/yjl/blob/5787686/dotfiles/bashrc#L45
+[2] https://github.com/livibetter-backup/yjl/commits/6870d9e/dotfiles/vimps1.c
+
+In 2011, the dotfiles were split and moved to its own repository, vimps1 was 
+moved along with the files [1].  vimps1 was licensed under GPL when vcprompt 
+was incorporated into vimps1's source, because chunks of GPL'd codes were 
+copied.  Later, vcprompt was removed from vimps1, but license was kept.
+
+[1] https://github.com/livibetter/dotfiles/commits/86f524a/bin/vimps1.c
+
+In early 2017, vimps1 has its own repository [1], the commit history was not 
+extracted, since the entire code was nearly rewritten and significantly 
+simplified, but the support for wide characters was added, and the license has 
+been changed to MIT License.
+
+[1] https://github.com/livibetter/vimps1
+
+
+                                  COPYRIGHT
+
+
+vimps1 is licensed under the MIT License.
